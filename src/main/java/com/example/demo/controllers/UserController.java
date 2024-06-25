@@ -1,14 +1,13 @@
 package com.example.demo.controllers;
 
 import com.example.demo.models.UserModel;
+import com.example.demo.repositories.IUserRepository;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import com.example.demo.entities.User;
 
 import java.util.List;
 
@@ -16,14 +15,22 @@ import java.util.List;
 @RequestMapping("user")
 public class UserController {
 
+    private IUserRepository userRepository;
+    public UserController(IUserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+
+    @CrossOrigin("*")
     @GetMapping("get-first-name")
     public String getFirstName(){
         return "Miljan";
     }
 
     @GetMapping("get-first-name-list")
-    public List<String> getFirstNameList(){
-        return List.of("Miljan", "Miljana");
+    public List<User> getFirstNameList(){
+        var results = userRepository.findAll();
+        return results;
     }
 
     @GetMapping("create-user")
