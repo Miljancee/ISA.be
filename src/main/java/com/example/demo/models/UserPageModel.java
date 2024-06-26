@@ -12,5 +12,5 @@ public class UserPageModel {
     private List<UserModel> Users;
 
     private int totalPages;
-    private int totalElements;
+    private Long totalElements;
 }

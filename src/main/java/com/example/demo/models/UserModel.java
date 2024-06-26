@@ -13,7 +13,6 @@ public class UserModel {
 
     @NotBlank // da first name uvek bude obevezno
     private String firstName;
-
     private String lastName;
 
     @Email

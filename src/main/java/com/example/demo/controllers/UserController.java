@@ -19,6 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("user")
 @RequiredArgsConstructor
+@CrossOrigin("*")
 public class UserController {
 
     private final IUserRepository userRepository;
@@ -37,8 +38,8 @@ public class UserController {
     }
 
     @GetMapping("get-user-page-list")
-    public UserPageModel getUserPageList(){
-        return UserMapers.toModelList(userRepository.findAll(PageRequest.of(0, 10)));
+    public UserPageModel getUserPageList(Integer pageNumber, Integer pageSize){
+        return UserMapers.toModelPagedList(userRepository.findAll(PageRequest.of(0, 20)));
 
     }
 

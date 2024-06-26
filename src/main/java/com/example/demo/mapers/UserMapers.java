@@ -39,11 +39,11 @@ public class UserMapers {
 
     }
 
-    public static UserPageModel toModelList(Page<User> pageEntity){
+    public static UserPageModel toModelPagedList(Page<User> pageEntity){
         return UserPageModel.builder()
                 .Users(toModelList(pageEntity.getContent()))
                 .totalPages(pageEntity.getTotalPages())
-                .totalElements(pageEntity.getNumberOfElements())
+                .totalElements(pageEntity.getTotalElements())
                 .build();
     }
 
