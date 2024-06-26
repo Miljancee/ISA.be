@@ -1,8 +1,13 @@
 package com.example.demo.controllers;
 
+import com.example.demo.mapers.UserMapers;
 import com.example.demo.models.UserModel;
+import com.example.demo.models.UserPageModel;
 import com.example.demo.repositories.IUserRepository;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -13,12 +18,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("user")
+@RequiredArgsConstructor
 public class UserController {
 
-    private IUserRepository userRepository;
-    public UserController(IUserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final IUserRepository userRepository;
 
 
     @CrossOrigin("*")
@@ -27,10 +30,16 @@ public class UserController {
         return "Miljan";
     }
 
-    @GetMapping("get-first-name-list")
-    public List<User> getFirstNameList(){
-        var results = userRepository.findAll();
-        return results;
+    @GetMapping("get-user-list")
+    public List<UserModel> getUserList(){
+        return UserMapers.toModelList(userRepository.findAll());
+
+    }
+
+    @GetMapping("get-user-page-list")
+    public UserPageModel getUserPageList(){
+        return UserMapers.toModelList(userRepository.findAll(PageRequest.of(0, 10)));
+
     }
 
     @GetMapping("create-user")
@@ -43,6 +52,10 @@ public class UserController {
         if (result.hasErrors()) {
             return new  ResponseEntity<>("Neuspesno registrovan!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
+        var entity = UserMapers.toEntity(userModel);
+        userRepository.save(entity);
+
         return new ResponseEntity<UserModel>(userModel, HttpStatus.CREATED);
     }
 
