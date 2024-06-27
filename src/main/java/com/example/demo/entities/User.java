@@ -23,6 +23,9 @@ public class User {
     @Column(name="email")
     private String email;
 
+    @Column(name="contact_number")
+    private String contactNumber;
+
     @OneToMany(mappedBy = "userId")
     private List<Product> products;
 

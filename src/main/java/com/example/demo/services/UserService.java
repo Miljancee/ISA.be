@@ -19,6 +19,7 @@ public class UserService implements IUserService{
     private final IUserProductsRepository userProductsRepository;
 
 
+
     @Override
     public List<UserModel> findAll() {
         return UserMappers.toModelList(userRepository.findAll());
@@ -39,9 +40,17 @@ public class UserService implements IUserService{
     }
 
     @Override
+    public UserModel update(UserModel model) {
+        var entity = UserMappers.toEntity(model);
+
+        var result = userRepository.save(entity);
+
+        return UserMappers.toModel(result);
+    }
+
+    @Override
     public List<UserProductsModel> findUserProductsAll() {
         var result = userProductsRepository.findAll();
-
         return UserProductsMapper.toModelList(result);
     }
 

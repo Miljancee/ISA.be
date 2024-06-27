@@ -1,12 +1,8 @@
 package com.example.demo.controllers;
 
-import com.example.demo.mapers.UserMappers;
-import com.example.demo.mapers.UserProductsMapper;
 import com.example.demo.models.UserModel;
 import com.example.demo.models.UserPageModel;
 import com.example.demo.models.UserProductsModel;
-import com.example.demo.repositories.IUserProductsRepository;
-import com.example.demo.repositories.IUserRepository;
 import com.example.demo.services.IUserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +22,9 @@ public class UserController {
 
     private final IUserService userService;
 
-    @GetMapping("get-user-list")
-    public List<UserModel> getUserList(){
+
+    @GetMapping("get-list")
+    public List<UserModel> getList(){
         return userService.findAll();
 
    }
@@ -35,7 +32,7 @@ public class UserController {
 
     @GetMapping("get-user-products-list")
     public List<UserProductsModel> getUserProductsList(){
-        return userService.findUserProductsAll();
+       return userService.findUserProductsAll();
 
     }
 
@@ -48,14 +45,22 @@ public class UserController {
     }
 
 
-    @GetMapping("create-user-body")
+    @PostMapping("create")
     public ResponseEntity<?> create(@RequestBody @Valid UserModel userModel, BindingResult result){
         if (result.hasErrors()) {
             return new  ResponseEntity<>("Neuspesno registrovan!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-
         return new ResponseEntity<>(userService.create(userModel), HttpStatus.CREATED);
     }
+
+    @PostMapping("update")
+    public ResponseEntity<?> update(@RequestBody @Valid UserModel userModel, BindingResult result){
+        if (result.hasErrors()) {
+            return new  ResponseEntity<>("Neuspesno registrovan!", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(userService.update(userModel), HttpStatus.CREATED);
+    }
+
+
 
 }

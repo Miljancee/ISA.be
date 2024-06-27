@@ -9,7 +9,11 @@ import org.springframework.data.domain.PageRequest;
 public interface IUserService {
 
     List<UserModel> findAll();
+
     UserPageModel findPagedList(PageRequest pageRequest);
+
     UserModel create(UserModel model);
+    UserModel update (UserModel model);
+
     List<UserProductsModel> findUserProductsAll();
 }
