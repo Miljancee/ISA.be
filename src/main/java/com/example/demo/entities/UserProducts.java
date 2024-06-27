@@ -5,10 +5,11 @@ import lombok.Data;
 
 import java.util.List;
 
+
 @Entity
 @Table(name = "users")
 @Data
-public class User {
+public class UserProducts {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")

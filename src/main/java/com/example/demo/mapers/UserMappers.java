@@ -1,14 +1,16 @@
 package com.example.demo.mapers;
 
+import com.example.demo.entities.UserProducts;
 import com.example.demo.models.UserModel;
 import com.example.demo.entities.User;
 import com.example.demo.models.UserPageModel;
+import com.example.demo.models.UserProductsModel;
 import org.springframework.data.domain.Page;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserMapers {
+public class UserMappers {
 
     public static User toEntity(UserModel model){
         User user = new User();
@@ -46,5 +48,8 @@ public class UserMapers {
                 .totalElements(pageEntity.getTotalElements())
                 .build();
     }
+
+
+
 
 }
