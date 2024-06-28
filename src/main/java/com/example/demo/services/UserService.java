@@ -1,51 +1,70 @@
 package com.example.demo.services;
-import com.example.demo.mapers.UserMappers;
+
+import com.example.demo.exceptions.user.UserAlreadyExistException;
+import com.example.demo.exceptions.user.UserException;
+import com.example.demo.mappers.UserMappers;
 import com.example.demo.mapers.UserProductsMapper;
 import com.example.demo.models.UserModel;
 import com.example.demo.models.UserPageModel;
 import com.example.demo.models.UserProductsModel;
 import com.example.demo.repositories.IUserProductsRepository;
 import com.example.demo.repositories.IUserRepository;
+import jdk.jshell.spi.ExecutionControl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class UserService implements IUserService{
+public class UserService implements IUserService {
     private final IUserRepository userRepository;
     private final IUserProductsRepository userProductsRepository;
-
-
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Override
     public List<UserModel> findAll() {
-        return UserMappers.toModelList(userRepository.findAll());
+        var result = userRepository.findAll();
+        return UserMappers.toModelList(result);
     }
 
     @Override
     public UserPageModel findPagedList(PageRequest pageRequest) {
-        return UserMappers.toModelPagedList(userRepository.findAll(pageRequest));
+        var result = userRepository.findAll(pageRequest);
+        return UserMappers.toModelPagedList(result);
     }
 
     @Override
     public UserModel create(UserModel model) {
-        var entity = UserMappers.toEntity(model);
+        var user = UserMappers.toEntity(model, passwordEncoder);
 
-        var result = userRepository.save(entity);
+        var existingUser = userRepository.findByEmail(model.getEmail());
 
-        return UserMappers.toModel(result);
+        if (existingUser.isPresent())
+            throw new UserAlreadyExistException("User with email " + model.getEmail() + " already exists");
+
+        var savedUser = userRepository.save(user);
+
+        return UserMappers.toModel(savedUser);
     }
 
     @Override
     public UserModel update(UserModel model) {
-        var entity = UserMappers.toEntity(model);
+        var entity = UserMappers.toEntity(model, passwordEncoder);
+        try {
+            var result = userRepository.save(entity);
+            return UserMappers.toModel(result);
+        } catch (Exception e) {
+            throw new UserException(e.getMessage());
+        }
+    }
 
-        var result = userRepository.save(entity);
-
-        return UserMappers.toModel(result);
+    @Override
+    public void delete(Integer userId) {
+        var entity = userRepository.findById(userId).orElseThrow(() -> new UserException("User Not Found"));
+        userRepository.delete(entity);
     }
 
     @Override
@@ -53,5 +72,4 @@ public class UserService implements IUserService{
         var result = userProductsRepository.findAll();
         return UserProductsMapper.toModelList(result);
     }
-
 }

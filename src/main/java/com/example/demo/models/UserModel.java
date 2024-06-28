@@ -10,15 +10,13 @@ import lombok.Data;
 @Builder
 public class UserModel {
     private int id;
-
-    @NotBlank // da first name uvek bude obevezno
+    @NotBlank
     private String firstName;
     private String lastName;
-
     @Email
     private String email;
-
     @ContactNumberConstraint
     private String contactNumber;
-
+    @NotBlank
+    private String password;
 }
